@@ -1,0 +1,43 @@
+logging:
+  level:
+    root: debug
+    org.apache.kafka: warn
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: producer
+  cloud:
+    bus:
+      id: ${spring.application.name}:${server.port}
+      destination: example-cloud-bus
+      trace:
+        enabled: true
+    stream:
+      default-binder: rocketmq1  # 默认使用那个binder
+      binders:
+        rocketmq1:
+          type: rocketmq
+          environment:
+            spring:
+              cloud:
+                stream:
+                  rocketmq:
+                    binder:
+                      name-server: localhost:9876
+                      group: cloud
+                    bindings:
+                      springCloudBusOutput:
+                        producer:
+                          send-msg-timeout: 15000
+        kafka1:
+          type: kafka
+          environment:
+            spring:
+              cloud:
+                stream:
+                  kafka:
+                    binder:
+                      brokers: localhost:9092

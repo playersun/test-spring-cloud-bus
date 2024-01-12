@@ -1,0 +1,39 @@
+logging:
+  level:
+    root: debug
+    org.apache.kafka: warn
+
+server:
+  port: 8081
+
+spring:
+  application:
+    name: customer
+  cloud:
+    bus:
+      id: ${spring.application.name}:${server.port}
+      destination: example-cloud-bus
+      trace:
+        enabled: true
+    stream:
+      default-binder: rocketmq1  # 默认使用那个binder
+      binders:
+        rocketmq1:                # binder name
+          type: rocketmq
+          environment:
+            spring:
+              cloud:
+                stream:
+                  rocketmq:
+                    binder:
+                      name-server: localhost:9876
+                      group: cloud
+        kafka1:                   # binder name
+          type: kafka
+          environment:
+            spring:
+              cloud:
+                stream:
+                  kafka:
+                    binder:
+                      brokers: localhost:9092
